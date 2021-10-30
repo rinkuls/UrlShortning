@@ -2,6 +2,7 @@ import jetbrains.buildServer.configs.kotlin.v2019_2.*
 import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.maven
 import jetbrains.buildServer.configs.kotlin.v2019_2.triggers.vcs
 
+
 /*
 The settings script is an entry point for defining a TeamCity
 project hierarchy. The script should contain a single call to the
@@ -28,7 +29,10 @@ version = "2021.2"
 
 project {
 
-    buildType(Build)
+    sequential {
+        buildType(Build)
+        buildType(Package)
+    }
 }
 
 object Build : BuildType({
@@ -45,8 +49,29 @@ object Build : BuildType({
         }
     }
 
+
+})
+
+object Package : BuildType({
+    name = "package"
+
+    vcs {
+        root(DslContext.settingsRoot)
+    }
+
+    steps {
+        maven {
+            goals = "clean package"
+            runnerArgs = "-Dmaven.test.failure.ignore=true -DskipTests"
+
+        }
+    }
+
+
     triggers {
         vcs {
+
         }
+
     }
 })
