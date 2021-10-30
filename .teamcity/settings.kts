@@ -29,6 +29,7 @@ version = "2021.2"
 project {
 
     buildType(Build)
+    buildType(Package)
 }
 
 object Build : BuildType({
@@ -40,8 +41,25 @@ object Build : BuildType({
 
     steps {
         maven {
-            goals = "clean package"
+            goals = "clean test"
             runnerArgs = "-Dmaven.test.failure.ignore=true"
+        }
+    }
+
+
+})
+
+object Package  : BuildType({
+    name = "Package"
+
+    vcs {
+        root(DslContext.settingsRoot)
+    }
+
+    steps {
+        maven {
+            goals = "clean package"
+            runnerArgs = "-Dmaven.test.failure.ignore=true -DskipTests"
         }
     }
 
