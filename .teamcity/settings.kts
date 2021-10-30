@@ -39,9 +39,8 @@ project {
 
 object Build : BuildType({
     name = "Build"
-    triggers {
-        vcs {
-        }
+    vcs {
+        root(DslContext.settingsRoot)
     }
 
 
