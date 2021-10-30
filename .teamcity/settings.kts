@@ -39,7 +39,10 @@ project {
 
 object Build : BuildType({
     name = "Build"
-
+    triggers {
+        vcs {
+        }
+    }
 
 
     steps {
