@@ -28,8 +28,10 @@ version = "2021.2"
 
 project {
 
-    buildType(Build)
-    buildType(Package)
+    sequential {
+        buildType(Build)
+        buildType(Package)
+    }
 }
 
 object Build : BuildType({
