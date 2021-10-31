@@ -85,7 +85,7 @@ object SlowTest  : BuildType({
     steps {
         maven {
             goals = "clean test"
-            runnerArgs = "-Dmaven.test.failure.ignore=true -Dtest=*.codingTest.*IT"
+            runnerArgs = "-Dmaven.test.failure.ignore=true -Dtest=*.codingTest.*Test"
         }
     }
 
