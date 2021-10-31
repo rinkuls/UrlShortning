@@ -56,10 +56,7 @@ object Build : BuildType({
             runnerArgs = "-Dmaven.test.failure.ignore=true"
         }
     }
-    triggers {
-        vcs {
-        }
-    }
+
 
 })
 object FastTest  : BuildType({
@@ -76,10 +73,7 @@ object FastTest  : BuildType({
         }
     }
 
-    triggers {
-        vcs {
-        }
-    }
+
 })
 object SlowTest  : BuildType({
     name = "SlowTest"
@@ -95,10 +89,7 @@ object SlowTest  : BuildType({
         }
     }
 
-    triggers {
-        vcs {
-        }
-    }
+
 })
 
 
