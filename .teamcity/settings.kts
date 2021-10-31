@@ -28,26 +28,23 @@ version = "2021.2"
 
 project {
 
-   val bts= sequential {
-        buildType(maven ("Build" , "clean compile"))
-        parallel {
-            buildType(maven ("FastTest" , "clean test","-Dmaven.test.failure.ignore=true -Dtest=*.codingTest.*Test"))
-            buildType(maven ("SlowTest" , "clean test","-Dmaven.test.failure.ignore=true -Dtest=*.codingTest.*Test"))
-        }
-        buildType(maven ("Package" , "clean package", "-DskipTests"))
-    }.buildTypes()
-    bts.forEach{
-        buildType(it)
-    }
-    bts.last().triggers {
-        vcs {
+    buildType(Build)
+    buildType(Package)
+    buildType(FastTest)
+    buildType(SlowTest)
 
+    sequential {
+        buildType(Build)
+        parallel {
+            buildType(FastTest)
+            buildType(SlowTest)
         }
+        buildType(Package)
     }
 }
 
-class maven(name:String, goals: String, runnerArgs: String? =null) : BuildType({
-    this.name = name
+object Build : BuildType({
+    name = "Build"
     vcs {
         root(DslContext.settingsRoot)
     }
@@ -55,9 +52,72 @@ class maven(name:String, goals: String, runnerArgs: String? =null) : BuildType({
 
     steps {
         maven {
-            this.goals = goals
-           this. runnerArgs =  runnerArgs
+            goals = "clean compile"
+            runnerArgs = "-Dmaven.test.failure.ignore=true"
+        }
+    }
+    triggers {
+        vcs {
+        }
+    }
+
+})
+object FastTest  : BuildType({
+    name = "FastTest"
+
+    vcs {
+        root(DslContext.settingsRoot)
+    }
+
+    steps {
+        maven {
+            goals = "clean test"
+            runnerArgs = "-Dmaven.test.failure.ignore=true -Dtest=*.codingTest.*Test"
+        }
+    }
+
+    triggers {
+        vcs {
+        }
+    }
+})
+object SlowTest  : BuildType({
+    name = "SlowTest"
+
+    vcs {
+        root(DslContext.settingsRoot)
+    }
+
+    steps {
+        maven {
+            goals = "clean test"
+            runnerArgs = "-Dmaven.test.failure.ignore=true -Dtest=*.codingTest.*IT"
+        }
+    }
+
+    triggers {
+        vcs {
         }
     }
 })
 
+
+object Package  : BuildType({
+    name = "Package"
+
+    vcs {
+        root(DslContext.settingsRoot)
+    }
+
+    steps {
+        maven {
+            goals = "clean package"
+            runnerArgs = "-Dmaven.test.failure.ignore=true -DskipTests"
+        }
+    }
+
+    triggers {
+        vcs {
+        }
+    }
+})
